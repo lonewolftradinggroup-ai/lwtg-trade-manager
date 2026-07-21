@@ -193,6 +193,7 @@
   }
   .strat-mits  { color: var(--accent); }
   .strat-qcs   { color: var(--green); }
+  .strat-qct   { color: #f59e0b; }  /* QC Trend — amber */
 
   .badge-long  { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
   .badge-short { background: var(--red-dim);   color: var(--red);   border: 1px solid var(--red); }
@@ -566,6 +567,7 @@ const TICK_VALUES = {
   "MES": 5.00,  "MNQ": 2.00,  "MGC": 10.00, "M2K": 5.00,
   // QC Signals presets (same tick values as underlying instrument)
   "MNQ-4m": 2.00, "MNQ-5m": 2.00, "MNQ-20m": 2.00, "MGC-5m": 10.00, "MGC-20m": 10.00, "MES-5m": 5.00,
+  "MNQ-4m-QCT": 2.00,  // QC Trend MNQ 4m
 };
 
 // Live price state
@@ -588,6 +590,9 @@ const INSTRUMENTS = [
   { id:"MGC-5m",  strat:"QC Signals", tf:"5m",  ticker:"MGC1!", url:null, qcs:true },
   { id:"MGC-20m", strat:"QC Signals", tf:"20m", ticker:"MGC1!", url:null, qcs:true },
   { id:"MES-5m",  strat:"QC Signals", tf:"5m",  ticker:"MES1!", url:null, qcs:true },
+  // ── QC Trend — paper trading (started Jul 21 2026) ──────────────────────
+  // *** Set url to GAS URL + ?preset=MNQ-4m-QCT once Ghost alert wired ***
+  { id:"MNQ-4m-QCT", strat:"QC Trend", tf:"4m", ticker:"MNQ1!", url:null, qcs:false },
 ];
 
 // ============================================================
@@ -757,7 +762,7 @@ function renderCards() {
     card.id = `card-${inst.id}`;
     const displayName = inst.id;
     const stratLabel  = inst.strat || "";
-    const stratClass  = stratLabel === "QC Signals" ? "strat-qcs" : "strat-mits";
+    const stratClass  = stratLabel === "QC Trend" ? "strat-qct" : stratLabel === "QC Signals" ? "strat-qcs" : "strat-mits";
     const stratDisplay = inst.qcs ? `QCS · ${inst.tf}` : stratLabel;
     card.innerHTML = `
       <div class="card-header">
