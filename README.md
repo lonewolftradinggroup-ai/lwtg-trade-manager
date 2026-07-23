@@ -6,46 +6,57 @@ A real-time dashboard that shows all your MITS, QC Signals, and QC Trend positio
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start — Two Ways to Run
 
-### What you need
-- Google Chrome
-- Python installed (for the local web server)
-- Your GAS /exec URL (from Section 6 of the User Guide)
-- Your Ghost webhook URLs (from Ghost → Tickers → click ticker → Webhook URL)
+### Option A — GitHub Pages (recommended for most users)
 
-### Step 1 — Download both files
-From the [latest release](https://github.com/lonewolftradinggroup-ai/lwtg-mits-system/releases):
+No download, no setup. Just open:
+
+**[https://lonewolftradinggroup-ai.github.io/lwtg-trade-manager](https://lonewolftradinggroup-ai.github.io/lwtg-trade-manager)**
+
+On first launch the ⚙ Connect dialog asks for your GAS /exec URL. Paste it, click Save. Done. The URL is remembered in your browser.
+
+> This is all most users need. The dashboard shows live positions, P&L, and entry/exit levels from your Google Sheet.
+
+---
+
+### Option B — Local (for Ghost exit buttons)
+
+The EXIT and FLATTEN ALL buttons require your Ghost webhook URLs, which live in a personal `lwtg-config.js` file on your machine. GitHub Pages cannot serve this file, so you run the app locally to load it.
+
+**Step 1 — Download both files** from the [latest release](https://github.com/lonewolftradinggroup-ai/lwtg-mits-system/releases):
 - `index.html` — the Trade Manager app
 - `lwtg-config.js` — your personal configuration template
 
-Place both files in the **same folder**.
+Place both files in the same folder.
 
-### Step 2 — Fill in lwtg-config.js
-Open `lwtg-config.js` in any text editor and replace the placeholder values:
+**Step 2 — Fill in lwtg-config.js**
 
-| Field | What to enter |
-|---|---|
-| `gas_url` | Your GAS /exec URL |
-| `instruments → url` | Your Ghost webhook URL for each MITS instrument |
-| `fee_per_contract` | Your broker round-trip commission (default: 1.90) |
-| `dll_warn` | Session loss warning threshold (default: -500) |
-| `dll_block` | Session loss block threshold (default: -750) |
+Open it in any text editor and replace the placeholder values:
+
+| Field | What to enter | Where to find it |
+|---|---|---|
+| `gas_url` | Your GAS /exec URL | Apps Script → Deploy → Manage Deployments |
+| `instruments → url` | Ghost webhook URL per instrument | Ghost → Tickers → click ticker → Webhook URL |
+| `fee_per_contract` | Your broker round-trip fee | Default: 1.90 |
+| `dll_warn` | Session loss warning threshold | Default: -500 |
+| `dll_block` | Session loss block threshold | Default: -750 |
 
 > ⚠️ **Keep `lwtg-config.js` private.** It contains your Ghost webhook secrets. Never share it, never commit it to GitHub. It is listed in `.gitignore` for this reason.
 
-### Step 3 — Start the local web server
-Run `LWTG_Start_Apps.bat` from your desktop, or open a terminal and run:
+**Step 3 — Start a local web server**
+
+Open a terminal in the folder containing your files and run:
 ```
-python -m http.server 8080 --directory "C:\path\to\your\apps"
+python -m http.server 8080
 ```
 
-### Step 4 — Open in Chrome
+**Step 4 — Open in Chrome**
 ```
 http://localhost:8080/index.html
 ```
 
-If `lwtg-config.js` is present and filled in correctly, the dashboard loads immediately with your instruments. No prompt needed.
+The dashboard loads immediately with your instruments and Ghost exit buttons active.
 
 ---
 
@@ -64,7 +75,7 @@ If `lwtg-config.js` is present and filled in correctly, the dashboard loads imme
 
 ---
 
-## ⚙️ Adding or Removing Instruments
+## ⚙️ Adding or Removing Instruments (Option B only)
 
 Edit the `instruments` array in `lwtg-config.js`. No HTML editing needed.
 
@@ -80,25 +91,21 @@ Edit the `instruments` array in `lwtg-config.js`. No HTML editing needed.
 },
 ```
 
-Save the file and reload the Trade Manager. Changes apply immediately.
+Save the file and reload. Changes apply immediately.
 
 ---
 
 ## 🔴 Exit Controls
 
-- **EXIT button** — fires a Ghost exit webhook for MITS instruments. Use to close a position manually.
-- **PAPER — NO EXIT** — shown on QCS and QCT cards. Exits are handled by the strategy.
+- **EXIT button** — fires a Ghost exit webhook for MITS instruments. Requires `url` set in config.
+- **PAPER — NO EXIT** — shown on QCS and QCT cards. Exits handled by the strategy.
 - **⚡ FLATTEN ALL** — fires exit webhooks for ALL active MITS instruments simultaneously. **Cannot be undone.** Confirmation required.
 
 ---
 
 ## 🔌 NT8 Live P&L
 
-The Trade Manager polls the NT8 Price Server at `localhost:8765` every 2 seconds for live prices. This requires:
-- NinjaTrader 8 running
-- `LWTGPriceServer.cs` NinjaScript indicator loaded on your chart
-
-If NT8 is offline, the Live P&L field shows `NT8 offline` and falls back to Google Sheets data.
+The Trade Manager polls the NT8 Price Server at `localhost:8765` every 2 seconds for live prices. Requires NinjaTrader 8 running with the `LWTGPriceServer.cs` indicator loaded. If NT8 is offline, Live P&L falls back to Google Sheets data.
 
 ---
 
@@ -106,12 +113,11 @@ If NT8 is offline, the Live P&L field shows `NT8 offline` and falls back to Goog
 
 | Problem | Fix |
 |---|---|
-| Dashboard won't load | Make sure the local web server is running and you're on `http://` not `file://` |
-| Cards show wrong position | Click the badge to manually override, or check AlertLog for orphan OPEN rows |
-| EXIT button does nothing | Check that `url` is set in `lwtg-config.js` for that instrument |
-| ⚙ Connect dialog keeps appearing | `lwtg-config.js` is missing or `gas_url` is not filled in |
-| NT8 offline | NinjaTrader is not running or `LWTGPriceServer.cs` is not loaded |
-| Live P&L shows wrong numbers | Check `tick` values in `lwtg-config.js` match your instrument |
+| ⚙ Connect dialog keeps appearing | `lwtg-config.js` not found or `gas_url` not filled in |
+| Cards show wrong position | Check AlertLog for orphan OPEN rows; click badge to override |
+| EXIT button does nothing | `url` not set in `lwtg-config.js` for that instrument |
+| NT8 offline | NinjaTrader not running or `LWTGPriceServer.cs` not loaded |
+| Running locally but config not loading | Make sure both files are in the same folder and you're on `http://` not `file://` |
 
 ---
 
