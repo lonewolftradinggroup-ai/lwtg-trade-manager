@@ -1,0 +1,17 @@
+# ── User-specific configuration ─────────────────────────────
+# Contains Ghost webhook URLs, secrets, and personal settings.
+# NEVER commit this file. Each user maintains their own copy.
+lwtg-config.js
+config.local.js
+
+# ── IDE files ────────────────────────────────────────────────
+.vscode/
+.idea/
+
+# ── OS files ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+npm-debug.log*
