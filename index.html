@@ -582,6 +582,7 @@ const DEFAULTS = {
     "MNQ-4m":2.00, "MNQ-5m":2.00, "MNQ-20m":2.00,
     "MGC-5m":10.00, "MGC-20m":10.00, "MES-5m":5.00,
     "MNQ-4m-QCT":2.00,
+  "MGC-2m-QCT":10.00,
   },
   instruments: [
     // Default instrument list — no Ghost URLs (user must add their own in lwtg-config.js)
@@ -592,6 +593,7 @@ const DEFAULTS = {
     { id:"MNQ-4m",     strat:"QC Signals", tf:"4m",  ticker:"MNQ1!", url:null, qcs:true  },
     { id:"MES-5m",     strat:"QC Signals", tf:"5m",  ticker:"MES1!", url:null, qcs:true  },
     { id:"MNQ-4m-QCT", strat:"QC Trend",   tf:"4m",  ticker:"MNQ1!", url:null, qcs:false },
+    { id:"MGC-2m-QCT", strat:"QC Trend",   tf:"2m",  ticker:"MGC1!", url:null, qcs:false },
   ],
 };
 
